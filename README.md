@@ -130,6 +130,22 @@ fields (see [Credentials](#credentials) above), and builds a Node.js
 `https.Agent`-equivalent (via n8n's `agentOptions` request option) from those
 values at request time — no external library, no file-system access.
 
+### What has been verified, and the n8n version requirement
+
+Tested against a real RavenDB 7.2.2 server (Docker) secured with a self-signed
+server certificate that was also registered as the admin client certificate: the
+node's `execute()` code, run with n8n's own HTTP client from `@n8n/backend-network`
+(1.12.2 and 1.18.4), completed Get / Create-or-Update / Delete / Query over
+mTLS, an encrypted private key plus the **Private Key Passphrase** field worked,
+and the same server answered `403` when no client certificate was sent. This was
+**not** run inside a full n8n instance (no workflow, no credential store).
+
+Reading n8n's source shows `agentOptions` is only honoured by
+`httpRequestWithAuthentication` on **n8n-core 2.19.0 and later**; in n8n-core 1.122.51,
+2.0.0, 2.16.1, 2.17.0 and 2.18.0 the request options are converted to axios without
+`agentOptions`, so the client certificate would **not** be sent. Use n8n 2.19 or
+newer for mTLS (assuming the n8n app version matches its n8n-core package version, which was not checked).
+
 ### Why PEM text, never a file path
 
 Community node verification explicitly disallows reading credentials from the
@@ -165,7 +181,7 @@ field.
 
 - **"Authenticate With Mutual TLS" test button doesn't validate my certificate.**
   n8n's built-in credential tester issues a plain, generic HTTP request and does
-  not attach this node's custom `agentOptions` — so the test can only confirm
+  not expected to attach this node's custom `agentOptions` (not verified against a running n8n) — so the test can only confirm
   the **Server URL** is reachable, not that your certificate is valid. Run an
   actual node operation to validate the full mTLS handshake.
 - **A 404 error on Get/Delete.** The document or database doesn't

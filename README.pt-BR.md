@@ -135,6 +135,24 @@ acima), e monta o equivalente a um `https.Agent` do Node.js (via a opção
 `agentOptions` da própria n8n) a partir desses valores, no momento da
 requisição — sem biblioteca externa, sem acesso ao sistema de arquivos.
 
+### O que foi verificado e a versão mínima da n8n
+
+Testado contra um servidor RavenDB 7.2.2 real (Docker) protegido por um
+certificado de servidor autoassinado, também registrado como certificado de
+cliente admin: o código `execute()` do node, rodando com o cliente HTTP da
+própria n8n (`@n8n/backend-network` 1.12.2 e 1.18.4), executou Get / Create or
+Update / Delete / Query via mTLS; chave privada criptografada com o campo
+**Private Key Passphrase** funcionou; e o mesmo servidor respondeu `403` quando
+nenhum certificado de cliente foi enviado. Isto **não** foi executado dentro de
+uma instância n8n completa (sem workflow nem credential store).
+
+Pelo código-fonte da n8n, `agentOptions` só é respeitado por
+`httpRequestWithAuthentication` no **n8n-core 2.19.0 ou superior**; no n8n-core
+1.122.51, 2.0.0, 2.16.1, 2.17.0 e 2.18.0 as opções são convertidas para axios
+sem `agentOptions`, e o certificado de cliente **não** seria enviado. Use n8n
+2.19 ou superior para mTLS (assumindo que a versão do app n8n acompanha a do
+pacote n8n-core, o que não foi checado).
+
 ### Por que texto PEM, nunca um caminho de arquivo
 
 A verificação de community nodes proíbe explicitamente ler credenciais do
@@ -172,7 +190,7 @@ correspondente.
 
 - **O botão de teste de "Authenticate With Mutual TLS" não valida meu certificado.**
   O testador de credenciais embutido da n8n dispara uma requisição HTTP
-  genérica e não anexa o `agentOptions` customizado deste node — então o teste
+  genérica e provavelmente não anexa o `agentOptions` customizado deste node (não verificado em uma n8n em execução) — então o teste
   só consegue confirmar que a **Server URL** está acessível, não que seu
   certificado é válido. Execute uma operação real do node para validar o
   handshake mTLS completo.
