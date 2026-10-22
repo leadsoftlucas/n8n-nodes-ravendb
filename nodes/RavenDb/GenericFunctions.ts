@@ -15,6 +15,8 @@ interface RavenDbApiCredentials {
 // dependency check). Instead this talks to RavenDB's plain REST API
 // (docs.ravendb.net) through n8n's own `this.helpers.httpRequestWithAuthentication`,
 // using its `agentOptions` passthrough to attach the client certificate for mTLS.
+// NOTE: n8n-core only honours `agentOptions` here from 2.19.0 on; older versions
+// silently drop it, so the client certificate is not sent (see README, mTLS section).
 export async function ravenDbApiRequest(
 	this: IExecuteFunctions,
 	method: IHttpRequestMethods,
