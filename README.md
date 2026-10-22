@@ -10,7 +10,6 @@ with mTLS (client certificate) authentication**.
 
 [![CI](https://img.shields.io/github/actions/workflow/status/leadsoftlucas/n8n-nodes-ravendb/ci.yml?branch=main&label=CI)](.github/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![npm version](https://img.shields.io/npm/v/n8n-nodes-ravendb)](https://www.npmjs.com/package/n8n-nodes-ravendb)
 [![RavenDB](https://img.shields.io/badge/RavenDB-REST%20API-b3131e)](https://ravendb.net)
 
 </div>
@@ -28,6 +27,23 @@ for **client-certificate (mTLS) authentication**.
 > **not published by RavenDB the company and not covered by RavenDB's official
 > support.** Use it, fork it, or copy from it — just don't assume it carries
 > RavenDB's institutional backing.
+
+## Status and installation
+
+**Status: early version (0.1.0), not yet published to npm.** It cannot be
+installed from the n8n UI (Settings > Community Nodes) until it is published.
+To try it today, install it from source into a self-hosted n8n:
+
+```bash
+git clone https://github.com/leadsoftlucas/n8n-nodes-ravendb.git
+cd n8n-nodes-ravendb
+npm ci
+npm run build          # compiles to ./dist
+npm run dev            # optional: starts a local n8n with this node loaded
+```
+
+To load it into an existing self-hosted n8n instead, copy or link the project
+into n8n's custom extensions folder (`~/.n8n/custom`, then restart n8n).
 
 ## What it does
 
@@ -67,7 +83,7 @@ Create a **RavenDB API** credential with:
 
 All four certificate/key fields are pasted as **PEM text directly into the
 credential** — never as a file path or an environment variable reference. See
-[Advanced: mTLS setup](#-advanced-mtls-setup) below for why, and for how to get
+the **Advanced: mTLS setup** section below for why, and for how to get
 these values out of a RavenDB cluster.
 
 ## Quick start
@@ -76,6 +92,7 @@ these values out of a RavenDB cluster.
 2. Add a **RavenDB** node, pick **Document → Get**, set **Database Name** and
    **Document ID**.
 3. Run the node — the document's JSON comes back as the item's output.
+   (For **Query**, each result row is emitted as its own item.)
 
 <details>
 <summary>Example: querying with RQL</summary>
@@ -151,9 +168,9 @@ field.
   not attach this node's custom `agentOptions` — so the test can only confirm
   the **Server URL** is reachable, not that your certificate is valid. Run an
   actual node operation to validate the full mTLS handshake.
-- **`RavenDB request ... failed with status 404`.** The document ID doesn't
-  exist in the target database - double check **Database Name** and **Document ID**.
-- **`RavenDB request ... failed with status 403` on an mTLS-secured cluster.**
+- **A 404 error on Get/Delete.** The document or database doesn't
+  exist - double check **Database Name** and **Document ID**.
+- **A 403 error on an mTLS-secured cluster.**
   The client certificate you provided isn't authorized for that database or
   operation in RavenDB's own security configuration - check the certificate's
   permissions in the RavenDB Studio (`Manage Server → Certificates`).
@@ -167,7 +184,7 @@ field.
 
 - n8n `1.x` (community nodes API version 1)
 - A reachable RavenDB server or cluster - see
-  [RavenDB's Docker/container guide](https://docs.ravendb.net/start/containers/general-guide)
+  [RavenDB's Docker/container guide](https://docs.ravendb.net/7.2/start/containers/general-guide)
   or [docs.ravendb.net](https://docs.ravendb.net) for local setup
 
 ## Contributing
@@ -185,7 +202,7 @@ discussion first.
 ## Related links
 
 - [RavenDB documentation](https://docs.ravendb.net)
-- [RavenDB REST API reference](https://docs.ravendb.net/client-api/rest-api/documents/get)
+- [RavenDB REST API reference](https://docs.ravendb.net/7.2/client-api/rest-api/rest-api-intro)
 - [RavenDB Query Language (RQL)](https://docs.ravendb.net/client-api/session/querying/what-is-rql)
 - [n8n community node documentation](https://docs.n8n.io/integrations/creating-nodes/)
 - [n8n community node verification guidelines](https://docs.n8n.io/integrations/creating-nodes/build/reference/verification-guidelines/)

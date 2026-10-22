@@ -10,7 +10,6 @@ escrever e consultar documentos em um banco RavenDB — incluindo suporte a um
 
 [![CI](https://img.shields.io/github/actions/workflow/status/leadsoftlucas/n8n-nodes-ravendb/ci.yml?branch=main&label=CI)](.github/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![npm version](https://img.shields.io/npm/v/n8n-nodes-ravendb)](https://www.npmjs.com/package/n8n-nodes-ravendb)
 [![RavenDB](https://img.shields.io/badge/RavenDB-REST%20API-b3131e)](https://ravendb.net)
 
 </div>
@@ -28,6 +27,25 @@ por certificado de cliente (mTLS)**.
 > GitHub. Ele **não é publicado pela empresa RavenDB e não tem cobertura do
 > suporte oficial da RavenDB.** Use, faça fork, ou copie partes dele — só não
 > assuma que ele carrega o respaldo institucional da RavenDB.
+
+## Status e instalação
+
+**Status: versão inicial (0.1.0), ainda não publicada no npm.** Ela não pode
+ser instalada pela interface do n8n (Settings > Community Nodes) até ser
+publicada. Para testar hoje, instale a partir do código-fonte em um n8n
+self-hosted:
+
+```bash
+git clone https://github.com/leadsoftlucas/n8n-nodes-ravendb.git
+cd n8n-nodes-ravendb
+npm ci
+npm run build          # compila para ./dist
+npm run dev            # opcional: sobe um n8n local com este node carregado
+```
+
+Para carregá-lo em um n8n self-hosted já existente, copie ou crie um link do
+projeto na pasta de extensões customizadas do n8n (`~/.n8n/custom`) e
+reinicie o n8n.
 
 ## O que ele faz
 
@@ -68,7 +86,7 @@ Crie uma credencial **RavenDB API** com:
 
 Os quatro campos de certificado/chave são colados como **texto PEM direto na
 credencial** — nunca como caminho de arquivo ou referência a variável de
-ambiente. Veja [Avançado: configuração de mTLS](#-avançado-configuração-de-mtls)
+ambiente. Veja a seção **Avançado: configuração de mTLS**
 abaixo para entender o porquê, e como extrair esses valores de um cluster
 RavenDB.
 
@@ -78,6 +96,7 @@ RavenDB.
 2. Adicione um node **RavenDB**, escolha **Document → Get**, preencha
    **Database Name** e **Document ID**.
 3. Execute o node — o JSON do documento volta como saída do item.
+   (Em **Query**, cada linha de resultado é emitida como um item separado.)
 
 <details>
 <summary>Exemplo: consultando com RQL</summary>
@@ -157,9 +176,9 @@ correspondente.
   só consegue confirmar que a **Server URL** está acessível, não que seu
   certificado é válido. Execute uma operação real do node para validar o
   handshake mTLS completo.
-- **`RavenDB request ... failed with status 404`.** O ID do documento não
-  existe no banco de destino - confira **Database Name** e **Document ID**.
-- **`RavenDB request ... failed with status 403` em um cluster protegido por mTLS.**
+- **Erro 404 em Get/Delete.** O documento ou o banco não
+  existe - confira **Database Name** e **Document ID**.
+- **Erro 403 em um cluster protegido por mTLS.**
   O certificado de cliente fornecido não está autorizado para aquele banco ou
   operação na configuração de segurança do próprio RavenDB - confira as
   permissões do certificado no RavenDB Studio (`Manage Server → Certificates`).
@@ -173,7 +192,7 @@ correspondente.
 
 - n8n `1.x` (community nodes API version 1)
 - Um servidor ou cluster RavenDB acessível - veja o
-  [guia de containers/Docker do RavenDB](https://docs.ravendb.net/start/containers/general-guide)
+  [guia de containers/Docker do RavenDB](https://docs.ravendb.net/7.2/start/containers/general-guide)
   ou [docs.ravendb.net](https://docs.ravendb.net) para configuração local
 
 ## Contribuindo
@@ -191,7 +210,7 @@ expandir o escopo sem discutir antes.
 ## Links relacionados
 
 - [Documentação da RavenDB](https://docs.ravendb.net)
-- [Referência da API REST do RavenDB](https://docs.ravendb.net/client-api/rest-api/documents/get)
+- [Referência da API REST do RavenDB](https://docs.ravendb.net/7.2/client-api/rest-api/rest-api-intro)
 - [RavenDB Query Language (RQL)](https://docs.ravendb.net/client-api/session/querying/what-is-rql)
 - [Documentação de community nodes da n8n](https://docs.n8n.io/integrations/creating-nodes/)
 - [Diretrizes de verificação de community nodes da n8n](https://docs.n8n.io/integrations/creating-nodes/build/reference/verification-guidelines/)

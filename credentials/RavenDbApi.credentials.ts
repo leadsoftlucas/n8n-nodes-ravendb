@@ -7,7 +7,7 @@ export class RavenDbApi implements ICredentialType {
 
 	icon = { light: 'file:ravendb.svg', dark: 'file:ravendb.dark.svg' } satisfies ICredentialType['icon'];
 
-	documentationUrl = 'https://docs.ravendb.net/start/introduction';
+	documentationUrl = 'https://docs.ravendb.net/7.2/start/getting-started';
 
 	properties: INodeProperties[] = [
 		{
