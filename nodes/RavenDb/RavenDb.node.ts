@@ -1,6 +1,8 @@
 import type {
 	IDataObject,
+	JsonObject,
 	IExecuteFunctions,
+	INode,
 	INodeExecutionData,
 	INodeType,
 	INodeTypeDescription,
@@ -8,6 +10,32 @@ import type {
 import { NodeApiError, NodeConnectionTypes, NodeOperationError } from 'n8n-workflow';
 
 import { ravenDbApiRequest } from './GenericFunctions';
+
+function parseJsonObject(
+	node: INode,
+	value: unknown,
+	fieldName: string,
+	itemIndex: number,
+): IDataObject {
+	let parsed = value;
+	if (typeof value === 'string') {
+		if (value.trim() === '') return {};
+		try {
+			parsed = JSON.parse(value);
+		} catch {
+			throw new NodeOperationError(node, `"${fieldName}" is not valid JSON`, { itemIndex });
+		}
+	}
+	if (parsed === null || typeof parsed !== 'object' || Array.isArray(parsed)) {
+		throw new NodeOperationError(node, `"${fieldName}" must be a JSON object`, { itemIndex });
+	}
+	return parsed as IDataObject;
+}
+
+function unwrapResults(response: IDataObject | IDataObject[] | undefined): IDataObject[] | undefined {
+	const results = (response as IDataObject | undefined)?.Results;
+	return Array.isArray(results) ? (results as IDataObject[]) : undefined;
+}
 
 export class RavenDb implements INodeType {
 	description: INodeTypeDescription = {
@@ -173,18 +201,31 @@ export class RavenDb implements INodeType {
 
 		for (let i = 0; i < items.length; i++) {
 			try {
-				const database = this.getNodeParameter('database', i) as string;
+				const database = (this.getNodeParameter('database', i) as string).trim();
+				if (!database) {
+					throw new NodeOperationError(this.getNode(), 'Database Name is required', { itemIndex: i });
+				}
 				let responseData: IDataObject | IDataObject[] | undefined;
 
 				if (resource === 'document') {
-					const documentId = this.getNodeParameter('documentId', i) as string;
+					const documentId = (this.getNodeParameter('documentId', i) as string).trim();
+					if (!documentId) {
+						throw new NodeOperationError(this.getNode(), 'Document ID is required', { itemIndex: i });
+					}
 
 					if (operation === 'get') {
 						responseData = await ravenDbApiRequest.call(this, 'GET', database, '/docs', undefined, {
 							id: documentId,
 						});
+						// RavenDB wraps the document as { Results: [doc], Includes: {} }
+						responseData = unwrapResults(responseData)?.[0] ?? responseData;
 					} else if (operation === 'put') {
-						const documentData = this.getNodeParameter('documentData', i) as IDataObject;
+						const documentData = parseJsonObject(
+							this.getNode(),
+							this.getNodeParameter('documentData', i),
+							'Document Data',
+							i,
+						);
 						responseData = await ravenDbApiRequest.call(
 							this,
 							'PUT',
@@ -205,12 +246,19 @@ export class RavenDb implements INodeType {
 					}
 				} else if (resource === 'query') {
 					const query = this.getNodeParameter('query', i) as string;
-					const queryParameters = this.getNodeParameter('queryParameters', i, {}) as IDataObject;
+					const queryParameters = parseJsonObject(
+						this.getNode(),
+						this.getNodeParameter('queryParameters', i, {}),
+						'Query Parameters',
+						i,
+					);
 
 					responseData = await ravenDbApiRequest.call(this, 'POST', database, '/queries', {
 						Query: query,
 						QueryParameters: queryParameters,
 					});
+					// RavenDB returns { Results: [...], TotalResults, ... }: emit one item per result
+					responseData = unwrapResults(responseData) ?? responseData;
 				} else {
 					throw new NodeOperationError(this.getNode(), `Unknown resource "${resource}"`, { itemIndex: i });
 				}
@@ -235,7 +283,7 @@ export class RavenDb implements INodeType {
 					throw new NodeOperationError(this.getNode(), error, { itemIndex: i });
 				}
 
-				throw new NodeApiError(this.getNode(), { message: (error as Error).message }, { itemIndex: i });
+				throw new NodeApiError(this.getNode(), error as JsonObject, { itemIndex: i });
 			}
 		}
 
