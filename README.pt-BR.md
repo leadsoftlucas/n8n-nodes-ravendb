@@ -8,7 +8,7 @@ Um **n8n community node para o RavenDB** que permite aos seus workflows ler,
 escrever e consultar documentos em um banco RavenDB — incluindo suporte a um
 **cluster RavenDB protegido por mTLS (certificado de cliente)**.
 
-[![CI](https://img.shields.io/github/actions/workflow/status/leadsoftlucas/n8n-nodes-ravendb/ci.yml?branch=main&label=CI)](.github/workflows/ci.yml)
+[![CI](https://img.shields.io/github/actions/workflow/status/ravendb/n8n-nodes-ravendb/ci.yml?branch=main&label=CI)](.github/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![RavenDB](https://img.shields.io/badge/RavenDB-REST%20API-b3131e)](https://ravendb.net)
 
@@ -21,12 +21,7 @@ documentos por ID, e rodar consultas [RQL](https://docs.ravendb.net/client-api/s
 `ravendb` e, quando a instância exige, com suporte completo à **autenticação
 por certificado de cliente (mTLS)**.
 
-> **Projeto independente, não é um lançamento oficial da RavenDB.** Este node é
-> construído e mantido por [Lucas R. Tavares](https://github.com/leadsoftlucas),
-> funcionário da RavenDB, por iniciativa própria e na sua conta pessoal do
-> GitHub. Ele **não é publicado pela empresa RavenDB e não tem cobertura do
-> suporte oficial da RavenDB.** Use, faça fork, ou copie partes dele — só não
-> assuma que ele carrega o respaldo institucional da RavenDB.
+> **Mantido pela RavenDB.** Criado originalmente por [Lucas R. Tavares](https://github.com/leadsoftlucas) (Sales Engineer / Solution Architect). Experimental: em revisão pela Engenharia; ainda sem cobertura de suporte oficial.
 
 ## Status e instalação
 
@@ -36,7 +31,7 @@ publicada. Para testar hoje, instale a partir do código-fonte em um n8n
 self-hosted:
 
 ```bash
-git clone https://github.com/leadsoftlucas/n8n-nodes-ravendb.git
+git clone https://github.com/ravendb/n8n-nodes-ravendb.git
 cd n8n-nodes-ravendb
 npm ci
 npm run build          # compila para ./dist
@@ -223,7 +218,11 @@ expandir o escopo sem discutir antes.
 
 ## Licença
 
-[MIT](LICENSE) © 2026 Lucas R. Tavares
+[MIT](LICENSE) © 2026 RavenDB
+
+## Proveniência
+
+Criado por [Lucas R. Tavares](https://github.com/leadsoftlucas) em `github.com/leadsoftlucas/n8n-nodes-ravendb` e transferido para a organização RavenDB em outubro de 2026, com histórico e autoria preservados. Licença: MIT, copyright da RavenDB.
 
 ## Links relacionados
 

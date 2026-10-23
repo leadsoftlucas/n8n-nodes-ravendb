@@ -3,7 +3,7 @@
     "version": "0.1.0",
     "description": "n8n community node for RavenDB — read, write, and query documents in your automation workflows, with support for both open and mTLS-secured RavenDB clusters",
     "license": "MIT",
-    "homepage": "https://github.com/leadsoftlucas/n8n-nodes-ravendb",
+    "homepage": "https://github.com/ravendb/n8n-nodes-ravendb",
     "keywords": [
         "n8n-community-node-package",
         "ravendb",
@@ -16,7 +16,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "https://github.com/leadsoftlucas/n8n-nodes-ravendb.git"
+        "url": "https://github.com/ravendb/n8n-nodes-ravendb.git"
     },
    "scripts": {
 		"build": "n8n-node build",

@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Repository transferred to the RavenDB organization; status banner and URLs updated; license holder RavenDB.
 - Document/Query responses are unwrapped (one item per RavenDB result).
 - JSON-string parameters are parsed; Database Name and Document ID are validated.
 - CI/publish workflows: restored stripped GitHub expressions.

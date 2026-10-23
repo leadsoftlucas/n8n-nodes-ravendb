@@ -8,7 +8,7 @@ An **n8n community node for RavenDB** that lets your workflows read, write, and
 query documents in a RavenDB database — including a **RavenDB cluster secured
 with mTLS (client certificate) authentication**.
 
-[![CI](https://img.shields.io/github/actions/workflow/status/leadsoftlucas/n8n-nodes-ravendb/ci.yml?branch=main&label=CI)](.github/workflows/ci.yml)
+[![CI](https://img.shields.io/github/actions/workflow/status/ravendb/n8n-nodes-ravendb/ci.yml?branch=main&label=CI)](.github/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![RavenDB](https://img.shields.io/badge/RavenDB-REST%20API-b3131e)](https://ravendb.net)
 
@@ -21,12 +21,7 @@ queries — using RavenDB's own documented REST API, with no dependency on the
 official `ravendb` SDK and, when the target instance requires it, full support
 for **client-certificate (mTLS) authentication**.
 
-> **Independent project, not an official RavenDB release.** This node is built
-> and maintained by [Lucas R. Tavares](https://github.com/leadsoftlucas), a RavenDB
-> employee, on his own initiative and in his own personal GitHub account. It is
-> **not published by RavenDB the company and not covered by RavenDB's official
-> support.** Use it, fork it, or copy from it — just don't assume it carries
-> RavenDB's institutional backing.
+> **Maintained by RavenDB.** Originally created by [Lucas R. Tavares](https://github.com/leadsoftlucas) (Sales Engineer / Solution Architect). Experimental: under review by Engineering; not yet covered by official support.
 
 ## Status and installation
 
@@ -35,7 +30,7 @@ installed from the n8n UI (Settings > Community Nodes) until it is published.
 To try it today, install it from source into a self-hosted n8n:
 
 ```bash
-git clone https://github.com/leadsoftlucas/n8n-nodes-ravendb.git
+git clone https://github.com/ravendb/n8n-nodes-ravendb.git
 cd n8n-nodes-ravendb
 npm ci
 npm run build          # compiles to ./dist
@@ -213,7 +208,11 @@ discussion first.
 
 ## License
 
-[MIT](LICENSE) © 2026 Lucas R. Tavares
+[MIT](LICENSE) © 2026 RavenDB
+
+## Provenance
+
+Created by [Lucas R. Tavares](https://github.com/leadsoftlucas) at `github.com/leadsoftlucas/n8n-nodes-ravendb` and transferred to the RavenDB organization in October 2026, with history and authorship preserved. License: MIT, copyright held by RavenDB.
 
 ## Related links
 
